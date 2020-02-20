@@ -1,0 +1,283 @@
+from bottle import get, post, run, request, response
+import sqlite3
+import json
+
+
+HOST = 'localhost'
+PORT = 7007
+
+conn = sqlite3.connect("movies.sqlite")
+
+def url(resource):
+    return f"http://{HOST}:{PORT}{resource}"
+
+
+def format_response(d):
+    return json.dumps(d, indent=4) + "\n"
+
+
+
+@get(/ping)
+	response.status = 200
+	return format_response({"pong"})
+
+
+@post('/reset')
+def reset
+	c = conn.cursor()
+	c.execute(
+	"""
+	DELETE
+	FROM *
+
+	
+	"""
+	conn.commit()
+	c.execute(
+		"""
+		INSERT
+		INTO   movie(imdb, title, year, running_time)
+		VALUES (tt5580390, The Shape of Water , 2017, 123)
+		""",
+		[imdb, title, year, running_time]
+	)
+	c.execute(
+		"""
+		INSERT
+		INTO   movie(imdb, title, year, running_time)
+		VALUES (tt4975722, Moonlight , 2016, 111)
+		""",
+		[imdb, title, year, running_time]
+	)
+	c.execute(
+		"""
+		INSERT
+		INTO   movie(imdb, title, year, running_time)
+		VALUES (tt1895587, Spotlight , 2015, 129)
+		""",
+		[imdb, title, year, running_time]
+	)
+	c.execute(
+		"""
+		INSERT
+		INTO   movie(imdb, title, year, running_time)
+		VALUES (tt2562232, Birdman , 2014, 119)
+		""",
+		[imdb, title, year, running_time]
+	)
+	c.execute(
+		"""
+		INSERT
+		INTO   customer(full_name, password, username)
+		VALUES (Alice, alice, dobido )
+		""",
+		[full_name, password, username]
+	)
+	c.execute(
+		"""
+		INSERT
+		INTO   customer(full_name, password, username)
+		VALUES (Bob, bob, whatsinaname)
+		""",
+		[full_name, password, username]
+	)
+	c.execute(
+		"""
+		INSERT
+		INTO   theater(theater_name, capacity)
+		VALUES (Kino, 10)
+		""",
+		[theater_name, capacity]
+	)
+	c.execute(
+		"""
+		INSERT
+		INTO   theater(theater_name, capacity)
+		VALUES (Södran, 16)
+		""",
+		[theater_name, capacity]
+	)
+	c.execute(
+		"""
+		INSERT
+		INTO   theater(theater_name, capacity)
+		VALUES (Skandia, 100)
+		""",
+		[theater_name, capacity]
+	)
+	
+	response.status = 200
+	return format_response({"OK"})
+
+
+
+@get('/movie')
+def get_movie():
+	c = conn.cursor()
+	c.execute(
+		"""
+		SELECT imdb, title, year, running_time
+		FROM movie
+		"""
+	)
+	s = [{"imdb": imdb, "title": title, "year": year, "running_time" : running time}
+		for(imdb, title, year, running_time) in c]
+	response.status = 200
+	return json.dumps({"data" : s}, indent= 4)
+
+@get('/screening')
+def get_screening():
+	c = conn.cursor()
+	c.execute(
+		"""
+		SELECT imdb, theater_name, screening_id, seats_remaining, start_time
+		FROM screening
+		"""
+	)
+	s = [{"imdb": imdb, "theater_name": theater_name, "screening_id": screening_id, "seats_remaining" : seats_remaining, "start_time":start_time)
+		for(imdb, theater_name, screening_id, seats_remaining, start_time) in c]
+	response.status = 200
+	return json.dumps({"data" : s}, indent= 4)
+
+@get('/ticket')
+def get_ticket():
+	c = conn.cursor()
+	c.execute(
+		"""
+		SELECT ticket_id, username, screening_id
+		FROM ticket
+		"""
+	)
+	s = [{"ticket_id": ticket_id, "username": username, "screening_id": screening_id}
+		for(ticket_id, username, screening_id) in c]
+	response.status = 200
+	return json.dumps({"data" : s}, indent= 4)
+
+@get('/customer')
+def get_customer():
+	c = conn.cursor()
+	c.execute(
+		"""
+		SELECT full_name, password, username
+		FROM customer
+		"""
+	)
+	s = [{"full_name":full_name, "password":password, "username":username}
+		for(full_name, password, username)in c]
+	response.status = 200
+	return json.dumps({"data" : s}, indent= 4)
+
+
+
+
+@post('/movie')
+def post_movie():
+	response.content_type = "movies/json'
+	imdb = request.query.imdb
+	title = request.query.title
+	year = request.query.year
+	running_time = request.query.running_time
+	if not (imdb and title and year and running_time):
+		response.status = 400
+		return format_response({"error": "Missing parameter"})
+	c = conn.cursor()
+	c.execute(
+		"""
+		INSERT
+		INTO   movie(imdb, title, year, running_time)
+		VALUES (?, ?, ?, ?)
+		""",
+		[imdb, title, year, running_time]
+	)
+	conn.commit()
+	response.status = 200
+
+@post('/screening')
+def post_screening():
+	response.content_type = "movies/json'
+	imdb = request.query.imdb
+	theater_name = request.query.theater_name
+	start_time = request.query.start_time 
+	screening_id = request.query.screening_id
+	if not (imdb and theater_name and start_time and screening_id):
+		response.status = 400
+		return format_response({"error": "Missing parameter"})
+	c = conn.cursor()
+	c.execute(
+		"""
+		INSERT
+		INTO   screening(imdb, theater_name, start_time, screening_id)
+		VALUES (?, ?, ?, ?)
+		""",
+		[imdb, theater_name, start_time, screening_id]
+	)
+	conn.commit()
+	response.status = 200
+
+@post('/customer')
+def post_screening():
+	response.content_type = "movies/json'
+	full_name = request.query.full_name
+	password = request.query.password
+	username = request.query.username
+	if not (full_name AND password AND username):
+		response.status = 400
+		return format_response({"error": "Missing parameter"})
+	c = conn.cursor()
+	c.execute(
+		"""
+		INSERT
+		INTO   customer(full_name, password, username)
+		VALUES (?, ?, ?)
+		""",
+		[full_name, password, username]
+	)
+	conn.commit()
+	response.status = 200
+
+@post('/ticket')
+def post_ticket():
+	response.content_type = "movies/json'
+	screening_id = request.query.screening_id
+	username = request.query.username
+	ticket_id = request.query.ticket_id
+
+	if not (screening_id AND username AND ticket_id):
+		response.status = 400
+		return format_response({"error": "Missing parameter"})
+	c = conn.cursor()
+	c.execute(
+		"""
+		INSERT
+		INTO   ticket(screening_id, username, ticket_id)
+		VALUES (?, ?, ?)
+		""",
+		[screening_id, username, ticket_id]
+	)
+	conn.commit()
+	response.status = 200
+
+@post('/theater')
+def post_theater():
+	response.content_type = "movies/json'
+	theater_name = request.query.theater_name
+	capacity = request.query.capacity
+	if not (theater_name and capacity):
+		response.status = 400
+		return format_response({"error": "Missing parameter"})
+	c = conn.cursor()
+	c.execute(
+		"""
+		INSERT
+		INTO   theater(theater_name, capacity)
+		VALUES (?, ?)
+		""",
+		[theater_name, capacity]
+	)
+	conn.commit()
+	response.status = 200
+
+
+
+
+run(host=HOST, port=PORT, debug=True)
