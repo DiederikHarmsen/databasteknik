@@ -75,6 +75,3 @@ VALUES    ("Nut Ring", "Flour", 450, "g"),
     ("Berliner", "Eggs", 50, "g"),
     ("Berliner", "Vanilla sugar", 5, "g"),
     ("Berliner", "Chocolate", 50, "g");
-
-INSERT 
-INTO    Ingredient(Ingredient_name, QuantityStorage, LastDeliveryTime, LastDeliveryQuantity)
