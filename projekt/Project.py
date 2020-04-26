@@ -23,7 +23,7 @@ def executeScriptsFromFile(filename):
     fd.close() 
     
     sqlCommands = sqlFile.split(';')
-    
+    #TESTTEST
     for command in sqlCommands:
         try:
             c.execute(command)
