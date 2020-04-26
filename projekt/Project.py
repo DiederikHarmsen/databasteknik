@@ -1,7 +1,7 @@
 from bottle import get, post, run, request, response
 import sqlite3
 import json
-
+from sqlite3 import OperationalError
 HOST = 'localhost'
 PORT = 1234
 
@@ -16,6 +16,7 @@ def format_response(d):
     return json.dumps(d, indent=4) + "\n"
 
 def executeScriptsFromFile(filename):
+    c = conn.cursor()
     #Opens and reads the file in question.
     fd = open(filename, 'r')
     sqlFile = fd.read()
@@ -60,8 +61,8 @@ def get_customer():
 
 @post('/reset')
 def reset():
-    c = conn.cursor()
-    c.executeScriptsFromFile(initial-data.sql)
+
+    executeScriptsFromFile('initial-data.sql')
 
     conn.commit()
     response.status = 200
