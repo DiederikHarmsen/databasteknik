@@ -47,14 +47,26 @@ def get_customer():
         FROM Customer
     """
 	)
-    s = [{"Name": Name, "Address":Address}
+    s = [{"name": Name, "Address":Address}
         for(Name, Address) in c]
 
     response.status = 200
     return json.dumps({"data" : s}, indent= 4)
 
 
+@get('/ingredients')
+def get_ingredients():
+    c = conn.cursor()
+    c.execute(
+    """
+        SELECT Ingredient_name, QuantityStorage, Unit
+        FROM Ingredient
+    """
+    s = [{"name": Ingredient_name, "quantity": QuantityStorage, "unit" : Unit}
+    for(Ingredient_name, QuantityStorage, Unit) in c]
 
+    response.status = 200
+    return json.dumps({"data" : s}, indent = 4)
 
 
 
