@@ -1,0 +1,29 @@
+
+def post_block():
+    response.content_type = 'application/json'
+
+    cookie = request.query.cookie
+    from_date= request.query.from_date
+    to_date=request.query.to_date
+
+    
+
+    if not (cookie and from_date and to_date):
+        response.status = 400
+        return json.dump({"error": "missing parameter"}, indent=4)
+
+
+    try:
+        c = conn.cursor()
+        c.execute(
+            """
+            UPDATE Pallet
+            SET
+                BlockedStatus = true
+            WHERE Product_name = ? AND  ProductionDate > ? AND ProductionDate < ?
+            """,
+            [cookie, from_date, to_date]
+        )
+        check = c.fetchone()[0]
+    except:
+        return json.dumps({"status":"no such cookie"}, indent = 4)
