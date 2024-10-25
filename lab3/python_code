@@ -14,7 +14,7 @@ def url(resource):
 def format_response(d):
     return json.dumps(d, indent=4) + "\n"
 
-    #Opens and reads the file in question.
+    #Opens and reads the file in question.  
     fd = open(filename, 'r')
     sqlFile = fd.read()
     fd.close()
