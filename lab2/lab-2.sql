@@ -2,8 +2,8 @@
 -- MySQL version.
 --
 -- Creates the tables students, courses, taken_courses and
--- populates them with (simulated) data.
---
+-- populates them with (simulated) data.   
+-- 
 -- We disable foreign key checks temporarily so we can delete the
 -- tables in arbitrary order, and so insertion is faster.
 
