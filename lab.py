@@ -1,3 +1,4 @@
+# The setup for the channel
 from bottle import get, post, run, request, response
 import sqlite3
 import json
@@ -7,6 +8,8 @@ HOST = 'localhost'
 PORT = 7007
 
 conn = sqlite3.connect("labb3.sqlite")
+
+
 
 def url(resource):
 	return "http://{}:{}{}".format(HOST, PORT,resource)
