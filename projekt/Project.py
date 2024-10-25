@@ -1,3 +1,5 @@
+#What is needed to start the channel
+
 from bottle import get, post, run, request, response
 import sqlite3
 import json
